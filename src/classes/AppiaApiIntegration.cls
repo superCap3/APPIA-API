@@ -28,17 +28,17 @@ public class AppiaApiIntegration {
 	    	doc.load(xmlResponse);
 	    	    
 	    	DOM.XMLNode root = doc.getRootElement();
-			System.debug('root has this value: ' + root);
+			//System.debug('root has this value: ' + root);
 	
 	    	if (root.getChildElement('reportDate', null) != null) {
 	    		root = root.getChildElement('reportDate', null);
-	    		System.debug('root has this value: ' + root);
+	    		//System.debug('root has this value: ' + root);
 	    		if (root.getChildElement('countries', null) != null) {
 	    			root = root.getChildElement('countries', null);
-	    			System.debug('root has this value: ' + root);
+	    			//System.debug('root has this value: ' + root);
 
 	    			for (DOM.XMLNode country: root.getChildren()) {
-	    				System.debug('country has this value: ' + country);
+	    				//System.debug('country has this value: ' + country);
 	    				String countryCode = '';
 
 	    				for (DOM.XMLNode countryElement: country.getChildren()) {
@@ -95,9 +95,6 @@ public class AppiaApiIntegration {
 			if ((child.getNodeType() == DOM.XMLNodeType.ELEMENT) && (child.getName() == 'installs')) {
 				reportData.installs__c = Decimal.valueOf(child.getText());
 			}
-			if ((child.getNodeType() == DOM.XMLNodeType.ELEMENT) && (child.getName() == 'platform')) {
-				reportData.platform__c = child.getText();
-			}
 			if ((child.getNodeType() == DOM.XMLNodeType.ELEMENT) && (child.getName() == 'revenue')) {
 				reportData.revenue__c = Decimal.valueOf(child.getText());
 			}
@@ -107,44 +104,15 @@ public class AppiaApiIntegration {
 		return reportData; 
 	}
 
-
-	private String parse(String toParse) {
-	  	DOM.Document doc = new DOM.Document();      
-	  	try {
-	    	doc.load(toParse);    
-	    	DOM.XMLNode root = doc.getRootElement();
-	    	return walkThrough(root);
-	    } catch (System.XMLException e) {  // invalid XML
-	    	return e.getMessage();
-	    }
+	public static Publisher_Performance__c add(Publisher_Performance__c pr1, Publisher_Performance__c pr2) {
+		Publisher_Performance__c result = new Publisher_Performance__c();
+		result.Publisher__c = pr1.Publisher__c;
+		result.platform__c = pr1.platform__c;
+		result.clicks__c = pr1.clicks__c + pr2.clicks__c;
+		result.impressions__c = pr1.impressions__c + pr2.impressions__c;
+		result.installs__c = pr1.installs__c + pr2.installs__c;
+		result.revenue__c = pr1.revenue__c + pr2.revenue__c;
+	
+		return result;
 	}
-
-	private String walkThrough(DOM.XMLNode node) {
-	  	String result = '\n';
-	  	if (node.getNodeType() == DOM.XMLNodeType.COMMENT) {
-	    	return 'Comment (' +  node.getText() + ')';
-	  	}
-
-	  	if (node.getNodeType() == DOM.XMLNodeType.TEXT) {
-	    	return 'Text (' + node.getText() + ')';
-	  	}
-
-	  	if (node.getNodeType() == DOM.XMLNodeType.ELEMENT) {
-	    	result += 'Element: ' + node.getName();
-	    	if (node.getText().trim() != '') {
-	      		result += ', text=' + node.getText().trim();
-	    	}
-	    	if (node.getAttributeCount() > 0) { 
-		      	for (Integer i = 0; i< node.getAttributeCount(); i++ ) {
-		        	result += ', attribute #' + i + ':' + node.getAttributeKeyAt(i) + '=' + node.getAttributeValue(node.getAttributeKeyAt(i), node.getAttributeKeyNsAt(i));
-		    	}  
-	    	}
-	    	for (Dom.XMLNode child: node.getChildElements()) {
-	      		result += walkThrough(child);
-	    	}
-	    	return result;
-	  	}
-	  	return '';  //should never reach here 
-	}
-
 }
