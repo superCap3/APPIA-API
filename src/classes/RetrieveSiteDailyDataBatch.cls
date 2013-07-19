@@ -94,12 +94,12 @@ global class RetrieveSiteDailyDataBatch implements Database.Batchable<sObject>, 
 
 		Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
 		//mail.setToAddresses(new String[] { job.CreatedBy.Email } );
-		mail.setToAddresses(new String[] {'adrian@eloquentix.com'});//	, 'debm@madronasg.com'
+		mail.setToAddresses(new String[] {'adrian@eloquentix.com', 'debm@madronasg.com'});//	
 		mail.setSubject('Nightly APPIA Report Data Update ' + job.Status);
 
 
 		String emailBody = 'Batch Start Time: ' + startTime + '.\n';
-		emailBody = 'Batch End Time: ' + endTime + '.\n';
+		emailBody += 'Batch End Time: ' + endTime + '.\n';
 		emailBody += 'Retrieved Publisher Performance records: ' + totalNoOfRetrievedPublisherPerformanceRecords + '.\n';
 		emailBody += 'Inserted Publisher Performance records: ' + totalNoOfInsertedPublisherPerformanceRecords + '.\n';
 		emailBody += 'Total number of Sites processed: ' + job.TotalJobItems + ' batches with '+ job.NumberOfErrors + ' failures.';

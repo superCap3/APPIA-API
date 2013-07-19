@@ -4,11 +4,7 @@
 	Helper class for the RetrieveSiteDailyDataBatch.cls. 
 	Main task of the class is to take the response from the APPIA API - a XML String - and parse it into a list of Publisher_Performance__c
 	Fields mapped for the matching are:
-	- campaignDescription__c (Text 255)
-	- campaignId__c (Text 18)
-	- campaignName__c (Text 255)
 	- clicks__c (number 18)
-	- countryCode__c (Text 2)
 	- Date__c (Date)
 	- impressions__c (number 18)
 	- installs__c (number 18)
@@ -42,16 +38,14 @@ public class AppiaApiIntegration {
 	    				String countryCode = '';
 
 	    				for (DOM.XMLNode countryElement: country.getChildren()) {
-		    				if ((countryElement.getNodeType() == DOM.XMLNodeType.ELEMENT) && (countryElement.getName() == 'countryCode')) {
+		    				/*if ((countryElement.getNodeType() == DOM.XMLNodeType.ELEMENT) && (countryElement.getName() == 'countryCode')) {
 		    					countryCode = countryElement.getText();
 		    					System.debug('countryCode has this value: ' + countryCode);
-		    				} 
+		    				} */
 		    				if ((countryElement.getNodeType() == DOM.XMLNodeType.ELEMENT) && (countryElement.getName() == 'campaigns')) {
 		    					for (Dom.XMLNode campaign: countryElement.getChildElements()) {
 		    						if ((campaign.getNodeType() == DOM.XMLNodeType.ELEMENT) && (campaign.getName() == 'campaign')) {
 		    							Publisher_Performance__c reportData = getCampaignInfo(campaign);
-		    							reportData.countryCode__c = countryCode;
-		    							reportData.Date__c = Date.today().addDays(-1);
 		    							
 		    							System.debug('reportData has this value: ' + reportData);
 										prList.add(reportData);
@@ -73,16 +67,8 @@ public class AppiaApiIntegration {
 
 	public static Publisher_Performance__c getCampaignInfo(DOM.XMLNode node) {
 		Publisher_Performance__c reportData = new Publisher_Performance__c();
+		reportData.Date__c = Date.today().addDays(-1);
 		for (Dom.XMLNode child: node.getChildElements()) {
-			if ((child.getNodeType() == DOM.XMLNodeType.ELEMENT) && (child.getName() == 'campaignId')) {
-				reportData.campaignId__c = child.getText();
-			}
-			if ((child.getNodeType() == DOM.XMLNodeType.ELEMENT) && (child.getName() == 'campaignName')) {
-				reportData.campaignName__c = child.getText();
-			}
-			if ((child.getNodeType() == DOM.XMLNodeType.ELEMENT) && (child.getName() == 'campaignDescription')) {
-				reportData.campaignDescription__c = child.getText();
-			}
 			if ((child.getNodeType() == DOM.XMLNodeType.ELEMENT) && (child.getName() == 'platform')) {
 				reportData.platform__c = child.getText();
 			}
@@ -106,6 +92,7 @@ public class AppiaApiIntegration {
 
 	public static Publisher_Performance__c add(Publisher_Performance__c pr1, Publisher_Performance__c pr2) {
 		Publisher_Performance__c result = new Publisher_Performance__c();
+		result.Date__c = Date.today().addDays(-1);
 		result.Publisher__c = pr1.Publisher__c;
 		result.platform__c = pr1.platform__c;
 		result.clicks__c = pr1.clicks__c + pr2.clicks__c;
