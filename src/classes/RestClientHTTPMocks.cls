@@ -1,3 +1,4 @@
+@isTest
 public class RestClientHTTPMocks implements HttpCalloutMock {
 
 	Protected Integer             code;

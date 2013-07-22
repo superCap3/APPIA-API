@@ -94,7 +94,7 @@ global class RetrieveSiteDailyDataBatch implements Database.Batchable<sObject>, 
 
 		Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
 		//mail.setToAddresses(new String[] { job.CreatedBy.Email } );
-		mail.setToAddresses(new String[] {'adrian@eloquentix.com', 'debm@madronasg.com'});//	
+		mail.setToAddresses(new String[] {'adrian@eloquentix.com', 'debm@madronasg.com'});//	, 'slowery@appia.com', Kelly.Sebes@appia.com'
 		mail.setSubject('Nightly APPIA Report Data Update ' + job.Status);
 
 
